@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { Geist_Mono, Noto_Sans } from "next/font/google";
 
 import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "Scratch Chat",
+  icons: {
+    icon: "/logo.png",
+  },
+};
 import { ThemeProvider } from "@/components/theme-provider";
 import { ConvexClientProvider } from "@/components/convex-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";

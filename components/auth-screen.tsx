@@ -15,6 +15,11 @@ export function AuthScreen() {
     <div className="flex h-screen items-center justify-center">
       <div className="w-full max-w-sm space-y-6 px-4">
         <div className="space-y-2 text-center">
+          <img
+            src="/logo.png"
+            alt="Scratch Chat"
+            className="mx-auto h-[100px] w-[100px] rounded-xl object-cover"
+          />
           <h1 className="text-2xl font-bold">Scratch Chat</h1>
           <p className="text-muted-foreground text-sm">
             An invite-only chat for the crew

@@ -47,7 +47,7 @@ export function ChatScreen({ user }: { user: UserWithAvatar }) {
       {/* Header */}
       <header className="bg-background flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold">Scratch Chat</h1>
+          <img src="/logo.png" alt="Scratch Chat" className="h-8 w-8 rounded-md object-cover" />
           <OnlineUsers />
         </div>
         <DropdownMenu>
