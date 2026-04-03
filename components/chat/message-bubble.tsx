@@ -59,7 +59,7 @@ export function MessageBubble({
 
   return (
     <div
-      className="group relative flex gap-3 py-1.5"
+      className="group relative flex gap-3 rounded-md px-2 py-1.5 -mx-2 hover:bg-muted/50 transition-colors"
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => {
         setShowActions(false);

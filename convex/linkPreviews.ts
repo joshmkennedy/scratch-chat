@@ -12,6 +12,18 @@ function extractMetaContent(html: string, property: string): string | null {
   return match ? (match[1] ?? match[2] ?? null) : null;
 }
 
+function extractTitle(html: string): string | null {
+  const match = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  return match ? match[1].trim() : null;
+}
+
+function extractMetaDescription(html: string): string | null {
+  const regex =
+    /<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']|<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i;
+  const match = html.match(regex);
+  return match ? (match[1] ?? match[2] ?? null) : null;
+}
+
 export const fetchLinkPreview = internalAction({
   args: {
     messageId: v.id("messages"),
@@ -21,9 +33,12 @@ export const fetchLinkPreview = internalAction({
     try {
       const response = await fetch(args.url, {
         headers: {
-          "User-Agent": "Mozilla/5.0 (compatible; ScratchChat/1.0)",
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept: "text/html",
         },
         redirect: "follow",
+        signal: AbortSignal.timeout(10000),
       });
 
       if (!response.ok) return;
@@ -32,10 +47,12 @@ export const fetchLinkPreview = internalAction({
 
       const title =
         extractMetaContent(html, "og:title") ??
-        extractMetaContent(html, "twitter:title");
+        extractMetaContent(html, "twitter:title") ??
+        extractTitle(html);
       const description =
         extractMetaContent(html, "og:description") ??
-        extractMetaContent(html, "twitter:description");
+        extractMetaContent(html, "twitter:description") ??
+        extractMetaDescription(html);
       const imageUrl =
         extractMetaContent(html, "og:image") ??
         extractMetaContent(html, "twitter:image");
