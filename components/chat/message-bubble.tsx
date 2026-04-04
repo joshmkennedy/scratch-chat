@@ -82,7 +82,7 @@ export function MessageBubble({
         </div>
 
         {/* Text body */}
-        <p className="text-sm whitespace-pre-wrap break-words">
+        <p className="text-sm whitespace-pre-wrap wrap-break-word">
           {message.body}
         </p>
 

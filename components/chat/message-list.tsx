@@ -18,6 +18,8 @@ export function MessageList({
     { initialNumItems: 50 }
   );
 
+  const isFirstPage = status === "LoadingFirstPage"
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const wasAtBottom = useRef(true);
@@ -40,7 +42,7 @@ export function MessageList({
   // Initial scroll to bottom
   useEffect(() => {
     bottomRef.current?.scrollIntoView();
-  }, [status === "LoadingFirstPage"]);
+  }, [isFirstPage]);
 
   const handleScroll = () => {
     const el = scrollRef.current;

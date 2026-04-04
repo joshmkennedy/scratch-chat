@@ -140,6 +140,7 @@ export function MessageInput() {
 
     await sendMessage({
       body: trimmedBody || " ",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       imageStorageId: storageId ? (storageId as any) : undefined,
     });
   };
@@ -205,7 +206,7 @@ export function MessageInput() {
           }}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="min-h-[40px] max-h-[120px] resize-none"
+          className="min-h-10 max-h-30 resize-none"
           rows={1}
         />
 
