@@ -13,6 +13,8 @@ import type * as http from "../http.js";
 import type * as inviteCodes from "../inviteCodes.js";
 import type * as linkPreviews from "../linkPreviews.js";
 import type * as messages from "../messages.js";
+import type * as node_notifications from "../node_notifications.js";
+import type * as notifications from "../notifications.js";
 import type * as presence from "../presence.js";
 import type * as reactions from "../reactions.js";
 import type * as users from "../users.js";
@@ -29,6 +31,8 @@ declare const fullApi: ApiFromModules<{
   inviteCodes: typeof inviteCodes;
   linkPreviews: typeof linkPreviews;
   messages: typeof messages;
+  node_notifications: typeof node_notifications;
+  notifications: typeof notifications;
   presence: typeof presence;
   reactions: typeof reactions;
   users: typeof users;

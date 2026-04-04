@@ -109,6 +109,13 @@ export const send = mutation({
       });
     }
 
+    // Send push notifications to other users
+    await ctx.scheduler.runAfter(0, internal.notifications.notifyNewMessage, {
+      senderUserId: userId,
+      senderName: user.displayName,
+      messageBody: args.body,
+    });
+
     return messageId;
   },
 });

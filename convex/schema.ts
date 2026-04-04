@@ -62,4 +62,10 @@ export default defineSchema({
     isOnline: v.boolean(),
     isTyping: v.boolean(),
   }).index("by_userId", ["userId"]),
+
+  pushSubscriptions: defineTable({
+    userId: v.id("users"),
+    deviceId: v.string(),
+    subscription: v.string(),
+  }).index("by_userId_and_deviceId", ["userId", "deviceId"]),
 });
