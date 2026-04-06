@@ -19,6 +19,7 @@ interface MessageData {
   body: string;
   imageStorageId?: Id<"_storage">;
   imageUrl: string | null;
+  giphyUrl?: string;
   linkPreview?: {
     url: string;
     title?: string;
@@ -81,10 +82,24 @@ export function MessageBubble({
           <span className="text-muted-foreground text-xs">{time}</span>
         </div>
 
-        {/* Text body */}
-        <p className="text-sm whitespace-pre-wrap wrap-break-word">
-          {message.body}
-        </p>
+        {/* Text body (hide if it's just the giphy URL) */}
+        {!(message.giphyUrl && message.body === message.giphyUrl) && (
+          <p className="text-sm whitespace-pre-wrap wrap-break-word">
+            {message.body}
+          </p>
+        )}
+
+        {/* Giphy embed */}
+        {message.giphyUrl && (
+          <div className="mt-1">
+            <img
+              src={message.giphyUrl}
+              alt="GIF"
+              className="max-h-64 max-w-xs rounded-lg"
+            />
+            <p className="text-muted-foreground mt-0.5 text-xs">via GIPHY</p>
+          </div>
+        )}
 
         {/* Inline image */}
         {message.imageUrl && (

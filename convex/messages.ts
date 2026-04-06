@@ -85,6 +85,7 @@ export const send = mutation({
   args: {
     body: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
+    giphyUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -98,11 +99,12 @@ export const send = mutation({
       userId,
       body: args.body,
       imageStorageId: args.imageStorageId,
+      giphyUrl: args.giphyUrl,
     });
 
-    // Schedule link preview fetch if message contains a URL
+    // Schedule link preview fetch if message contains a URL (skip for giphy messages)
     const urlMatch = args.body.match(URL_REGEX);
-    if (urlMatch) {
+    if (urlMatch && !args.giphyUrl) {
       await ctx.scheduler.runAfter(0, internal.linkPreviews.fetchLinkPreview, {
         messageId,
         url: urlMatch[0],

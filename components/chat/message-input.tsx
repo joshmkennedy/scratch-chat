@@ -5,7 +5,8 @@ import { api } from "@/convex/_generated/api";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ImagePlus, Send } from "lucide-react";
+import { ImagePlus, Send, Clapperboard } from "lucide-react";
+import { GiphyPicker } from "./giphy-picker";
 
 export function MessageInput() {
   const sendMessage = useMutation(api.messages.send);
@@ -17,6 +18,7 @@ export function MessageInput() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageStorageId, setImageStorageId] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [giphyOpen, setGiphyOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragCounterRef = useRef(0);
@@ -126,6 +128,13 @@ export function MessageInput() {
     const trimmedBody = body.trim();
     if (!trimmedBody && !imageStorageId) return;
 
+    // Intercept /giphy command
+    if (trimmedBody === "/giphy") {
+      setBody("");
+      setGiphyOpen(true);
+      return;
+    }
+
     // Clear typing indicator
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -145,6 +154,10 @@ export function MessageInput() {
     });
   };
 
+  const handleGiphySelect = async (url: string) => {
+    await sendMessage({ body: url, giphyUrl: url });
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -154,6 +167,11 @@ export function MessageInput() {
 
   return (
     <div className="relative border-t px-4 py-3">
+      <GiphyPicker
+        open={giphyOpen}
+        onOpenChange={setGiphyOpen}
+        onSelect={handleGiphySelect}
+      />
       {/* Drag overlay */}
       {dragging && (
         <div className="bg-primary/10 border-primary absolute inset-0 z-50 flex items-center justify-center rounded-lg border-2 border-dashed">
@@ -196,6 +214,14 @@ export function MessageInput() {
           disabled={uploading}
         >
           <ImagePlus className="h-5 w-5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0"
+          onClick={() => setGiphyOpen(true)}
+        >
+          <Clapperboard className="h-5 w-5" />
         </Button>
 
         <Textarea

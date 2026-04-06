@@ -35,6 +35,7 @@ export default defineSchema({
     userId: v.id("users"),
     body: v.string(),
     imageStorageId: v.optional(v.id("_storage")),
+    giphyUrl: v.optional(v.string()),
     linkPreview: v.optional(
       v.object({
         url: v.string(),
