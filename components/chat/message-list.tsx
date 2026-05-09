@@ -7,6 +7,30 @@ import { useEffect, useRef, useCallback } from "react";
 import { MessageBubble } from "./message-bubble";
 import { Loader2 } from "lucide-react";
 
+function dayKey(ts: number) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function ordinal(n: number) {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function formatDayLabel(ts: number) {
+  const d = new Date(ts);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const that = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.round((today.getTime() - that.getTime()) / 86400000);
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  const weekday = d.toLocaleDateString(undefined, { weekday: "long" });
+  const month = d.toLocaleDateString(undefined, { month: "long" });
+  return `${weekday}, ${month} ${ordinal(d.getDate())}`;
+}
+
 export function MessageList({
   currentUserId,
 }: {
@@ -64,6 +88,17 @@ export function MessageList({
   // Messages come in desc order from the query, reverse for display
   const messages = [...results].reverse();
 
+  const groups: { key: string; label: string; messages: typeof messages }[] = [];
+  for (const msg of messages) {
+    const key = dayKey(msg._creationTime);
+    const last = groups[groups.length - 1];
+    if (last && last.key === key) {
+      last.messages.push(msg);
+    } else {
+      groups.push({ key, label: formatDayLabel(msg._creationTime), messages: [msg] });
+    }
+  }
+
   return (
     <div
       ref={scrollRef}
@@ -101,13 +136,22 @@ export function MessageList({
         </div>
       )}
 
-      {messages.map((msg) => (
-        <MessageBubble
-          key={msg._id}
-          message={msg}
-          isOwn={msg.userId === currentUserId}
-          currentUserId={currentUserId}
-        />
+      {groups.map((group) => (
+        <div key={group.key} className="relative">
+          <div className="sticky top-2 z-10 flex justify-center pointer-events-none my-2">
+            <div className="bg-background border rounded-full px-3 py-1 text-xs font-medium shadow-sm pointer-events-auto">
+              {group.label}
+            </div>
+          </div>
+          {group.messages.map((msg) => (
+            <MessageBubble
+              key={msg._id}
+              message={msg}
+              isOwn={msg.userId === currentUserId}
+              currentUserId={currentUserId}
+            />
+          ))}
+        </div>
       ))}
 
       <div ref={bottomRef} />
